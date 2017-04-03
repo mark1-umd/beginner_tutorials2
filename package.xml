@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+  <name>beginner_tutorials2</name>
+  <version>0.0.1</version>
+  <description>MJenkins' ROS beginner_tutorials package</description>
+
+  <maintainer email="mark1@umd.edu">Mark Jenkins</maintainer>
+  <license>BSD</license>
+  <url type="website">http://github.com/mark1-umd/beginner_tutorials</url>
+  <author email="mark1@umd.edu">Mark Jenkins</author> -->
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>std_msgs</run_depend>
+
+</package>

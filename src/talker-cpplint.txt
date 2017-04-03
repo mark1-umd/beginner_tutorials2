@@ -1,0 +1,2 @@
+Done processing talker.cpp
+Total errors found: 0
