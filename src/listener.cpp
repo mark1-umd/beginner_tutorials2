@@ -4,12 +4,15 @@
  *
  * @author MJenkins, ENPM 808X Spring 2017
  * @date Mar 27, 2017 - Creation
+ * @date Apr 4, 2017 - Updated
  *
  * @brief ROS Tutorials - Publisher/Subscriber - listener node
  *
  * This source file creates a subscriber node within the ROS environment as part
- * of the ROS beginner tutorials.  The code is based on the source code provided
- * in the tutorials, and is not an original creation of Mark R. Jenkins
+ * of the ROS beginner tutorials.  The base code is based on the source code provided
+ * in the tutorials, and is not an original creation of Mark R. Jenkins.  The /set_listener_log_level
+ * service, with the ability to change the logging level of the logging messages sent when
+ * messages are received from the "chatter" service, is an original creation of Mark Jenkins.
  *
  * *
  * * BSD 3-Clause License
@@ -55,15 +58,19 @@
  * of the messages received through the chatter topic
  */
 
+// Establish startup default logging level
+std::string listenerLoggingLevel = "INFO";
+
 /**
  * @brief Service callback for setting listener logging level
- * @param req A string that should correspond to one of the logging levels
- * @param resp An empty response
+ * @param req An object with a "level" attribute string that should correspond to one of the logging levels
+ * @param resp An object with a "level" attribute string indicating the current logging level
  */
-std::string listenerLoggingLevel = "DEBUG";
 bool setListenerLoggingLevel(
     beginner_tutorials2::ListenerLogLevel::Request &req,
     beginner_tutorials2::ListenerLogLevel::Response &resp) {
+
+  // Set the listener logging level to the requested level if the level is a valid level
   std::string level = req.level;
   ROS_DEBUG_STREAM("Listener log level " << level << " requested");
   if (level == "DEBUG")
@@ -77,21 +84,24 @@ bool setListenerLoggingLevel(
   else if (level == "FATAL")
     listenerLoggingLevel = "FATAL";
   else {
+    // An invalid listener logging level was requested; issue a warning and do not change level
     ROS_WARN_STREAM(
         "Invalid listener logging level " << level << " requested; level remains " << listenerLoggingLevel);
     resp.level = listenerLoggingLevel;
     return false;
   };
+  // Signal that the listener logging level was changed successfully
   ROS_INFO_STREAM("Listener logging level set to " << listenerLoggingLevel);
   resp.level = listenerLoggingLevel;
   return true;
 }
 
 /**
- * @brief Subscription callback for the chatter topic
+ * @brief Subscription callback for the chatter topic; logs the chatter received at the current listener logging level
  * @param msg A message string received on the chatter topic
  */
 void chatterCallback(const std_msgs::String::ConstPtr& msg) {
+  // If the current listener logging level is valid, log the chatter that was received at that level
   if (listenerLoggingLevel == "DEBUG")
     ROS_DEBUG_STREAM("I heard: " << msg-> data.c_str());
   else if (listenerLoggingLevel == "INFO")
@@ -103,6 +113,7 @@ void chatterCallback(const std_msgs::String::ConstPtr& msg) {
   else if (listenerLoggingLevel == "FATAL")
     ROS_FATAL_STREAM("I heard: " << msg->data.c_str());
   else
+    // The current listener logging level is invalid; log an error
     ROS_ERROR_STREAM("Invalid listener logging level " << listenerLoggingLevel);
 }
 
