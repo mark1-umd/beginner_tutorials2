@@ -4,12 +4,18 @@
  *
  * @author MJenkins, ENPM 808X Spring 2017
  * @date Mar 27, 2017 - Creation
+ * @date Apr 4, 2017 - Modified to add service to adjust the message publishing frequency
  *
- * @brief ROS Tutorials - Publisher/Subscriber - talker node
+ * @brief ROS Tutorials - Publisher/Subscriber - talker node (with added adjustable frequency)
  *
  * This source file creates a publisher node within the ROS environment as part
- * of the ROS beginner tutorials.  The code is based on the source code provided
- * in the tutorials, and is not an original creation of Mark R. Jenkins
+ * of the ROS beginner tutorials.  The bulk of the code is based on the source code provided
+ * in the tutorials, and is not an original creation of Mark R. Jenkins.  The service to adjust
+ * the frequency of the messages was added by Mark Jenkins.
+ *
+ * An enumerated message is published on the "chatter" topic at a specified frequency.
+ * A service called "set_talker_frequency" accepts a "messages per second" argument and
+ * adjusts the message publishing frequency accordingly.
  *
  * *
  * * BSD 3-Clause License
@@ -44,13 +50,43 @@
  */
 
 #include <sstream>
-
 #include "ros/ros.h"
 #include "std_msgs/String.h"
+#include "beginner_tutorials2/TalkerFrequency.h"
 
 /**
- * This tutorial demonstrates simple sending of messages over the ROS system.
+ * This tutorial demonstrates simple sending of messages over the ROS system.  It has been
+ * modified to provide an adjustable frequency at which the messages are sent.
  */
+
+// Establish the initial message publishing frequency
+double talkerFrequency = 1.0;
+
+/**
+ * @brief Service callback for setting talker frequency
+ * @param req An object with a "msgsPerSecond" attribute for the frequency to send chatter messages
+ * @param resp An object with a "msgsPerSecond" attribute indicating the current frequency at which chatter message are being sent
+ */
+bool setTalkerFrequency(beginner_tutorials2::TalkerFrequency::Request &req,
+                        beginner_tutorials2::TalkerFrequency::Response &resp) {
+
+  // If the requested rate is valid, change the message publishing frequency
+  if (req.msgsPerSecond > 0) {
+    ROS_INFO_STREAM(
+        "Changing talk frequency to " << req.msgsPerSecond << " messages per second");
+    talkerFrequency = req.msgsPerSecond;
+    resp.msgsPerSecond = talkerFrequency;
+    return true;
+  } else {
+    // An invalid rate was specified; log an error
+    ROS_ERROR_STREAM(
+        "Invalid talker frequency of " << req.msgsPerSecond << " requested");
+    talkerFrequency = 0.0;
+    resp.msgsPerSecond = talkerFrequency;
+    return false;
+  }
+}
+
 int main(int argc, char **argv) {
   /**
    * The ros::init() function needs to see argc and argv so that it can perform
@@ -71,6 +107,10 @@ int main(int argc, char **argv) {
    */
   ros::NodeHandle n;
 
+  // Register the talker frequency adjustment service with the master
+  ros::ServiceServer server = n.advertiseService("set_talker_frequency",
+                                                 &setTalkerFrequency);
+
   /**
    * The advertise() function is how you tell ROS that you want to
    * publish on a given topic name. This invokes a call to the ROS
@@ -90,14 +130,29 @@ int main(int argc, char **argv) {
    */
   ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
 
-  ros::Rate loop_rate(10);
-
   /**
    * A count of how many messages we have sent. This is used to create
    * a unique string for each message.
    */
   int count = 0;
+
+  // Our initial message publishing rate based on the initial frequency
+  ros::Rate loop_rate(talkerFrequency);
+  double previousTalkerFrequency = talkerFrequency;
+
   while (ros::ok()) {
+    // See if our frequency was adjusted
+    if (talkerFrequency != previousTalkerFrequency)
+      // If the frequency is valid, adjust the message publishing rate
+      if (talkerFrequency > 0) {
+        loop_rate = ros::Rate(talkerFrequency);
+        previousTalkerFrequency = talkerFrequency;
+      } else {
+        // Invalid rate specified; log fatal error and exit
+        ROS_FATAL_STREAM("Talker can't continue due to invalid frequency");
+        return 1;
+      }
+
     /**
      * This is a message object. You stuff it with data, and then publish it.
      */
@@ -107,7 +162,7 @@ int main(int argc, char **argv) {
     ss << "Johnny 5 is alive - need more input! " << count;
     msg.data = ss.str();
 
-    ROS_INFO("%s", msg.data.c_str());
+    ROS_INFO_STREAM(msg.data.c_str());
 
     /**
      * The publish() function is how you send messages. The parameter
@@ -117,8 +172,10 @@ int main(int argc, char **argv) {
      */
     chatter_pub.publish(msg);
 
+    // Turn over control temporarily
     ros::spinOnce();
 
+    // Wait enough time to loop (and publish) at the requested rate
     loop_rate.sleep();
     ++count;
   }
