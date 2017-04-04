@@ -43,14 +43,67 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <string>
 #include "ros/ros.h"
+#include "std_srvs/Empty.h"
 #include "std_msgs/String.h"
+#include "beginner_tutorials2/ListenerLogLevel.h"
 
 /**
  * This tutorial demonstrates simple receipt of messages over the ROS system.
+ * It has been modified to provide a service that can change the logging level
+ * of the messages received through the chatter topic
+ */
+
+/**
+ * @brief Service callback for setting listener logging level
+ * @param req A string that should correspond to one of the logging levels
+ * @param resp An empty response
+ */
+std::string listenerLoggingLevel = "DEBUG";
+bool setListenerLoggingLevel(
+    beginner_tutorials2::ListenerLogLevel::Request &req,
+    beginner_tutorials2::ListenerLogLevel::Response &resp) {
+  std::string level = req.level;
+  ROS_DEBUG_STREAM("Listener log level " << level << " requested");
+  if (level == "DEBUG")
+    listenerLoggingLevel = "DEBUG";
+  else if (level == "INFO")
+    listenerLoggingLevel = "INFO";
+  else if (level == "WARN")
+    listenerLoggingLevel = "WARN";
+  else if (level == "ERROR")
+    listenerLoggingLevel = "ERROR";
+  else if (level == "FATAL")
+    listenerLoggingLevel = "FATAL";
+  else {
+    ROS_WARN_STREAM(
+        "Invalid listener logging level " << level << " requested; level remains " << listenerLoggingLevel);
+    resp.level = listenerLoggingLevel;
+    return false;
+  };
+  ROS_INFO_STREAM("Listener logging level set to " << listenerLoggingLevel);
+  resp.level = listenerLoggingLevel;
+  return true;
+}
+
+/**
+ * @brief Subscription callback for the chatter topic
+ * @param msg A message string received on the chatter topic
  */
 void chatterCallback(const std_msgs::String::ConstPtr& msg) {
-  ROS_INFO("I heard: [%s]", msg->data.c_str());
+  if (listenerLoggingLevel == "DEBUG")
+    ROS_DEBUG_STREAM("I heard: " << msg-> data.c_str());
+  else if (listenerLoggingLevel == "INFO")
+    ROS_INFO_STREAM("I heard: " << msg->data.c_str());
+  else if (listenerLoggingLevel == "WARN")
+    ROS_WARN_STREAM("I heard: " << msg->data.c_str());
+  else if (listenerLoggingLevel == "ERROR")
+    ROS_ERROR_STREAM("I heard: " << msg->data.c_str());
+  else if (listenerLoggingLevel == "FATAL")
+    ROS_FATAL_STREAM("I heard: " << msg->data.c_str());
+  else
+    ROS_ERROR_STREAM("Invalid listener logging level " << listenerLoggingLevel);
 }
 
 int main(int argc, char **argv) {
@@ -72,6 +125,10 @@ int main(int argc, char **argv) {
    * NodeHandle destructed will close down the node.
    */
   ros::NodeHandle n;
+
+  // Register the chatterLoggingLevel service with the master
+  ros::ServiceServer server = n.advertiseService("set_listener_log_level",
+                                                 &setListenerLoggingLevel);
 
   /**
    * The subscribe() call is how you tell ROS that you want to receive messages
