@@ -1,0 +1,5 @@
+<launch>
+  <arg name="rate" default="1" doc="Initial talker message publishing rate (msgs per second)" />
+  <node pkg="beginner_tutorials2" name="listener" type="listener" />
+  <node pkg="beginner_tutorials2" name="talker" type="talker" args="-r $(arg rate)" />
+</launch>
