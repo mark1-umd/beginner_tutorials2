@@ -16,6 +16,8 @@
  * An enumerated message is published on the "chatter" topic at a specified frequency.
  * A service called "set_talker_frequency" accepts a "messages per second" argument and
  * adjusts the message publishing frequency accordingly.
+ * A command line option "-r <value" accepts a "messages per second" value and sets
+ * the initial message publishing frequency accordingly.
  *
  * *
  * * BSD 3-Clause License
