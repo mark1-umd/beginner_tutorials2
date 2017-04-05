@@ -69,9 +69,9 @@ double talkerFrequency = 1.0;
  * @param req An object with a "msgsPerSecond" attribute for the frequency to send chatter messages
  * @param resp An object with a "msgsPerSecond" attribute indicating the current frequency at which chatter message are being sent
  */
-bool setTalkerFrequency(beginner_tutorials2::TalkerFrequency::Request &req,
-                        beginner_tutorials2::TalkerFrequency::Response &resp) {
-
+bool setTalkerFrequency(
+    beginner_tutorials2::TalkerFrequency::Request &req,
+    beginner_tutorials2::TalkerFrequency::Response &resp) {
   // If the requested rate is valid, change the message publishing frequency
   if (req.msgsPerSecond > 0) {
     ROS_INFO_STREAM(
@@ -105,15 +105,16 @@ int main(int argc, char **argv) {
   // Set our publishing frequency, either as the default value specified for the
   // talkerFrequency, or as a rate passed as a command line argument (-r <rate>)
 
-  // Check to see if there is a -r (rate) command line option, and set the rate accordingly
-  // (ros::init should have stripped any ROS arguments, and the 0th argument should be
-  // the path of the program (which we don't care about)
+  // Check to see if there is a -r (rate) command line option, and set the rate
+  // accordingly (ros::init should have stripped any ROS arguments, and the 0th
+  // argument should be the path of the program (which we don't care about)
   for (int i = 1; i < argc; i++) {
     if (i + 1 != argc) {
       // If we match the parameter
       if (strcmp(argv[i], "-r") == 0) {
-        // set the frequency to the value of the next token interpreted as a floating point
-        // number; if this ends up anything other than a rate > 0 we'll have to quit
+        // set the frequency to the value of the next token interpreted as a
+        // floating point number; if this ends up anything other than a
+        // rate > 0 we'll have to quit
         talkerFrequency = atof(argv[i + 1]);
         // Skip the parameter value
         i++;
@@ -175,7 +176,7 @@ int main(int argc, char **argv) {
 
   while (ros::ok()) {
     // See if our frequency was adjusted
-    if (talkerFrequency != previousTalkerFrequency)
+    if (talkerFrequency != previousTalkerFrequency) {
       // If the frequency is valid, adjust the message publishing rate
       if (talkerFrequency > 0) {
         loop_rate = ros::Rate(talkerFrequency);
@@ -185,6 +186,7 @@ int main(int argc, char **argv) {
         ROS_FATAL_STREAM("Talker can't continue due to invalid frequency");
         return 1;
       }
+    }
 
     /**
      * This is a message object. You stuff it with data, and then publish it.

@@ -59,6 +59,8 @@
  */
 
 // Establish startup default logging level
+// Yes, this is a global string variable, which is *bad*, but it makes
+// sense to use it in this limited context
 std::string listenerLoggingLevel = "INFO";
 
 /**
@@ -70,7 +72,8 @@ bool setListenerLoggingLevel(
     beginner_tutorials2::ListenerLogLevel::Request &req,
     beginner_tutorials2::ListenerLogLevel::Response &resp) {
 
-  // Set the listener logging level to the requested level if the level is a valid level
+  // Set the listener logging level to the requested level if the level is a
+  // valid level
   std::string level = req.level;
   ROS_DEBUG_STREAM("Listener log level " << level << " requested");
   if (level == "DEBUG")
@@ -84,12 +87,13 @@ bool setListenerLoggingLevel(
   else if (level == "FATAL")
     listenerLoggingLevel = "FATAL";
   else {
-    // An invalid listener logging level was requested; issue a warning and do not change level
+    // An invalid listener logging level was requested; issue a warning and
+    // do not change level
     ROS_WARN_STREAM(
         "Invalid listener logging level " << level << " requested; level remains " << listenerLoggingLevel);
     resp.level = listenerLoggingLevel;
     return false;
-  };
+  }
   // Signal that the listener logging level was changed successfully
   ROS_INFO_STREAM("Listener logging level set to " << listenerLoggingLevel);
   resp.level = listenerLoggingLevel;
