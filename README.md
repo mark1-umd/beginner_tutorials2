@@ -42,3 +42,17 @@ The talker can be run with an initial message rate using the command line parame
 Since the talker and listener are typically run together, a launch file conveniently starts them both at the same time.  The launch file permits an initial message publishing rate for the talker node to be specified; if the rate argument is not specified, the launcher uses a default value.  Example:
 
     - roslaunch beginner_tutorials2 talklisten rate:=0.3
+    
+## Use of logging levels
+The following messages may be logged by talker and listener:
+
+- listener: DEBUG: "Listener log level " << level << " requested"
+- listener: WARN: "Invalid listener logging level " << level << " requested; level remains " << listenerLoggingLevel
+- listener: INFO: "Listener logging level set to " << listenerLoggingLevel
+- listener: ERROR: "Invalid listener logging level " << listenerLoggingLevel
+- listener: Any level selected: "I heard: " << msg->data.c_str()
+- talker: INFO: "Changing talk frequency to " << req.msgsPerSecond << " messages per second"
+- talker: ERROR: "Invalid talker frequency of " << req.msgsPerSecond << " requested"
+- talker: FATAL: "Talker can't start due to invalid frequency"
+- talker: FATAL: "Talker can't continue due to invalid frequency"
+- talker: INFO: msg.data.c_str()
