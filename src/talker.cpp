@@ -100,6 +100,25 @@ int main(int argc, char **argv) {
    */
   ros::init(argc, argv, "talker");
 
+  // Set our publishing frequency, either as the default value specified for the
+  // talkerFrequency, or as a rate passed as a command line argument (-r <rate>)
+
+  // Check to see if there is a -r (rate) command line option, and set the rate accordingly
+  // (ros::init should have stripped any ROS arguments, and the 0th argument should be
+  // the path of the program (which we don't care about)
+  for (int i = 1; i < argc; i++) {
+    if (i + 1 != argc) {
+      // If we match the parameter
+      if (strcmp(argv[i], "-r") == 0) {
+        // set the frequency to the value of the next token interpreted as a floating point
+        // number; if this ends up anything other than a rate > 0 we'll have to quit
+        talkerFrequency = atof(argv[i + 1]);
+        // Skip the parameter value
+        i++;
+      }
+    }
+  }
+
   /**
    * NodeHandle is the main access point to communications with the ROS system.
    * The first NodeHandle constructed will fully initialize this node, and the last
@@ -130,15 +149,27 @@ int main(int argc, char **argv) {
    */
   ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
 
+  // Declare our ROS rate object with a known good frequency
+  ros::Rate loop_rate(1);
+
+  // Make sure we can know when our frequency has been changed by a service call
+  double previousTalkerFrequency;
+
+  // Make sure we have a valid talker frequency
+  if (talkerFrequency > 0) {
+    loop_rate = ros::Rate(talkerFrequency);
+    previousTalkerFrequency = talkerFrequency;
+  } else {
+    // Invalid rate specified; log fatal error and exit
+    ROS_FATAL_STREAM("Talker can't start due to invalid frequency");
+    return 1;
+  }
+
   /**
    * A count of how many messages we have sent. This is used to create
    * a unique string for each message.
    */
   int count = 0;
-
-  // Our initial message publishing rate based on the initial frequency
-  ros::Rate loop_rate(talkerFrequency);
-  double previousTalkerFrequency = talkerFrequency;
 
   while (ros::ok()) {
     // See if our frequency was adjusted
