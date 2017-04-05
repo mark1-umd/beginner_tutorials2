@@ -16,8 +16,8 @@ To import the project into your catkin workspace, clone or download it into the 
 
 ## Running the tutorial programs
 This ROS package beginner_tutorials2 contains two programs, a ROS publisher called "listener" and a ROS subscriber called "talker."  To run them, first make sure that the catkin workspace where you have placed the package has been added to your local ROS configuration by sourcing the build/setup.bash script in each terminal window from which you will invoke one of the programs.  Then, use the command
-"rosrun beginner_tutorials listener" to run the subscriber program, and
-"rosrun beginner_tutorials talker" to run the publisher program.
+"rosrun beginner_tutorials2 listener" to run the subscriber program, and
+"rosrun beginner_tutorials2 talker" to run the publisher program.
 
 Be sure that you have a roscore already executing when you invoke the listener
 or talker programs, the same as you would for running any other ROS nodes.
@@ -27,7 +27,7 @@ Both the talker and the listener nodes can be adjusted while they are running us
 
 - listener: provides the set_listener_logging_level service to adjust the level at which the listener node notifies the logging service of the chatter messages it has received.  The level can be set to DEBUG, INFO, WARN, ERROR, or FATAL.  Example:
 
-    - rosservice call /set_listener_logging_level WARN
+    - rosservice call /set_listener_log_level WARN
 
 - talker: provides the set_talker_frequency service to adjust the level at which the talker node publishes messages to the chatter topic.  The frequency, specified as a messages per second rate, can be set to any non-zero, positive value.  Example:
 
