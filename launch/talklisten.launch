@@ -1,5 +1,15 @@
-<launch>
+<launch> 
+  <!-- The talker frequency can be specified when launching --> 
   <arg name="rate" default="1" doc="Initial talker message publishing rate (msgs per second)" />
+
+  <!-- Optionally enable recording of data using the rosbag tool.  The bag file
+       will be written to the ~/.ros directory unless ROS_HOME is defined.  The
+       bag filename will begin with "talklisten" and have a date/time stamp.    -->
+  <arg name="record" default="false" />
+    <node if="$(arg record)" pkg="rosbag" type="record" name="talklisten_record"
+  args="-a -o talklisten" />
+
+  <!-- Fire up the listener and the talker, using the specified rate for the talker -->
   <node pkg="beginner_tutorials2" name="listener" type="listener" />
   <node pkg="beginner_tutorials2" name="talker" type="talker" args="-r $(arg rate)" />
 </launch>
