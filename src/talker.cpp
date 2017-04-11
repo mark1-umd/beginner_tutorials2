@@ -19,6 +19,9 @@
  * adjusts the message publishing frequency accordingly.
  * A command line option "-r <value" accepts a "messages per second" value and sets
  * the initial message publishing frequency accordingly.
+ * A time-invariant transform between parent frame "/world" and child frame "/talk" is broadcast
+ * with a non-zero translation and non-zero rotation between the two coordinate frames.  The tf
+ * broadcast occurs at the same rate as the chatter message is published.
  *
  * *
  * * BSD 3-Clause License
