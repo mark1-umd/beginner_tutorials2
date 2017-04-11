@@ -41,7 +41,13 @@ The talker can be run with an initial message rate using the command line parame
 ## Launching the talker and listener at the same time
 Since the talker and listener are typically run together, a launch file conveniently starts them both at the same time.  The launch file permits an initial message publishing rate for the talker node to be specified; if the rate argument is not specified, the launcher uses a default value.  Example:
 
-    - roslaunch beginner_tutorials2 talklisten rate:=0.3
+    - roslaunch beginner_tutorials2 talklisten.launch rate:=0.3
+
+The launch file can optionally record all published topics to a bag file; the default is to not record.  Example:
+
+    - roslaunch beginner_tutorials2 talklisten.launch record:=true
+
+If a recording is made, the bag file will be stored in the directory ~/.ros, unless ROS_HOME is defined, in which case it will be stored there.  The bag filename is prefixed with "talklisten" and includes the date and time of the recording.
     
 ## Use of logging levels
 The following messages may be logged by talker and listener:
