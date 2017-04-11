@@ -185,7 +185,7 @@ if(CATKIN_ENABLE_TESTING)
   
   add_rostest_gtest(
   talker_test
-  test/talker_test.launch
+  test/talker_test.test
   test/talker_test.cpp
   )
   target_link_libraries(

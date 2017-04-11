@@ -8,7 +8,8 @@
  * @brief Tests for the "talker" node from ROS beginner_tutorials
  *
  * This is a rostest node designed to test the talker node developed originally from the ROS
- * beginner_tutorials, but expanded in functionality by my ENPM808X homework assignments.
+ * beginner_tutorials, but expanded in functionality by my ENPM808X homework assignments.  At
+ * the moment it only tests the setTalkerFrequency service.
  *
  * *
  * * BSD 3-Clause License
@@ -47,16 +48,17 @@
 #include <gtest/gtest.h>
 #include "beginner_tutorials2/TalkerFrequency.h"
 
-// Set up the test using the GoogleTest macros
+// Set up the Talker setTalkerFrequency test using the GoogleTest macros
 TEST (Talker, setTalkerFrequency) {
   // Create a node handle
   ros::NodeHandle nh;
 
+  // Create a service client object for the "set_talker_frequency" service
   ros::ServiceClient client = nh
       .serviceClient<beginner_tutorials2::TalkerFrequency>(
       "set_talker_frequency");
 
-  // Wait a bit for the service node to start up
+  // Wait a bit for the service node to start up and offer the service
   bool serviceAvailable(client.waitForExistence(ros::Duration(1)));
 
   // The service should become available before too long
@@ -65,21 +67,23 @@ TEST (Talker, setTalkerFrequency) {
   // Get srv object for the service calls
   beginner_tutorials2::TalkerFrequency srv;
 
-  // Try a valid frequency of 1 message per second
-  srv.request.msgsPerSecond = 1;
+  // Try to set a valid frequency of 1 message per second
+  srv.request.msgsPerSecond = 5.5;
   bool success = client.call(srv);
 
   // The service call should return true to indicate it was successful
   EXPECT_TRUE(success);
 
   // The response frequency should match the requested frequency
-  EXPECT_DOUBLE_EQ(double(1), srv.response.msgsPerSecond);
+  EXPECT_DOUBLE_EQ(double(5.5), srv.response.msgsPerSecond);
 }
+
 
 int main(int argc, char **argv) {
   // Initialize ROS
   ros::init(argc, argv, "talker_test");
 
+  // Run all of the Google Test defined tests
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
