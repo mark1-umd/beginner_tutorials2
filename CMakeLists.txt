@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   message_generation
+  tf
 #  genmsg # Commented out MRJ 2017-03-27
 )
 
@@ -110,18 +111,18 @@ include_directories(
 
 ## Declare a cpp library
 # add_library(beginner_tutorials
-#   src/${PROJECT_NAME}/beginner_tutorials.cpp
+#   src/${PROJECT_NAME}/beginner_tutorials2.cpp
 # )
 
 ## Declare a cpp executable
-# add_executable(beginner_tutorials_node src/beginner_tutorials_node.cpp)
+# add_executable(beginner_tutorials2_node src/beginner_tutorials2_node.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(beginner_tutorials_node beginner_tutorials_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(beginner_tutorials_node
+# target_link_libraries(beginner_tutorials2_node
 #   ${catkin_LIBRARIES}
 # )
 add_executable(talker src/talker.cpp)

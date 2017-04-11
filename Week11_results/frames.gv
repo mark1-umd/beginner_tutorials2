@@ -1,0 +1,3 @@
+digraph G {
+"world" -> "talk"[label="Broadcaster: /talker\nAverage rate: 1.250 Hz\nMost recent transform: 1491870647.233 \nBuffer length: 4.001 sec\n"];
+}
