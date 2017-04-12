@@ -58,7 +58,7 @@
 #include <sstream>
 #include "ros/ros.h"
 #include "std_msgs/String.h"
-#include <tf/transform_broadcaster.h>
+#include "tf/transform_broadcaster.h"
 #include "beginner_tutorials2/TalkerFrequency.h"
 
 /**
@@ -179,17 +179,18 @@ int main(int argc, char **argv) {
   // Create a transform object to hold the transform we will broadcast
   tf::Transform transform;
 
-  // Set the origin of the child frame to be 0 units forward, 1 unit up, and 0.25 units
-  // to the right of the parent frame origin
+  // Set the origin of the child frame to be 0 units forward, 1 unit up,
+  // and 0.25 units to the right of the parent frame origin
   transform.setOrigin(tf::Vector3(0.0, -0.25, 1.0));
 
-  // Create a quaternion object for setting rotation information in the transform
+  // Create a quaternion object for setting rotation information in the
+  // transform
   tf::Quaternion q;
 
-  // Specify that the child frame is rotated 90 degrees clockwise around the
-  // vertical (z) axis
+  // Specify that the child frame is rotated 90 degrees clockwise around
+  // the vertical (z) axis
   const double PI = std::atan(1.0) * 4;
-  q.setRPY(0, 0, -PI / double(2.0));
+  q.setRPY(0, 0, -PI / static_cast<double>(2));
   transform.setRotation(q);
 
   /**
@@ -214,7 +215,8 @@ int main(int argc, char **argv) {
 
     // Broadcast the transform using the transform broadcast object
     // The time that this transform is valid at is now (ros::Time::now())
-    // Specify that this is a transform between "/world" (parent) and "/talk" (child)
+    // Specify that this is a transform between "/world" (parent) and
+    // "/talk" (child)
     br.sendTransform(
         tf::StampedTransform(transform, ros::Time::now(), "/world", "/talk"));
 

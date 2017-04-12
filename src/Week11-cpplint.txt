@@ -1,0 +1,11 @@
+./listener.cpp:64:  Static/global string variables are not permitted.  [runtime/string] [4]
+./listener.cpp:72:  Is this a non-const reference? If so, make const or use a pointer: beginner_tutorials2::ListenerLogLevel::Request &req  [runtime/references] [2]
+./listener.cpp:73:  Is this a non-const reference? If so, make const or use a pointer: beginner_tutorials2::ListenerLogLevel::Response &resp  [runtime/references] [2]
+./listener.cpp:89:  If an else has a brace on one side, it should have it on both  [readability/braces] [5]
+./listener.cpp:93:  Lines should be <= 80 characters long  [whitespace/line_length] [2]
+./talker.cpp:78:  Is this a non-const reference? If so, make const or use a pointer: beginner_tutorials2::TalkerFrequency::Request &req  [runtime/references] [2]
+./talker.cpp:79:  Is this a non-const reference? If so, make const or use a pointer: beginner_tutorials2::TalkerFrequency::Response &resp  [runtime/references] [2]
+./talker.cpp:83:  Lines should be <= 80 characters long  [whitespace/line_length] [2]
+Done processing ./listener.cpp
+Done processing ./talker.cpp
+Total errors found: 8

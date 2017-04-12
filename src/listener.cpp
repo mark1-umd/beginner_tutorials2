@@ -105,7 +105,8 @@ bool setListenerLoggingLevel(
  * @param msg A message string received on the chatter topic
  */
 void chatterCallback(const std_msgs::String::ConstPtr& msg) {
-  // If the current listener logging level is valid, log the chatter that was received at that level
+  // If the current listener logging level is valid,
+  // log the chatter that was received at that level
   if (listenerLoggingLevel == "DEBUG")
     ROS_DEBUG_STREAM("I heard: " << msg-> data.c_str());
   else if (listenerLoggingLevel == "INFO")

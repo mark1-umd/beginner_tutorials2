@@ -1,0 +1,6 @@
+Checking listener.cpp...
+1/2 files checked 42% done
+Checking talker.cpp...
+2/2 files checked 100% done
+Checking usage of global functions..
+(information) Cppcheck cannot find all the include files (use --check-config for details)
