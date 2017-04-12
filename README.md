@@ -83,7 +83,27 @@ For a static visual depiction of the coordinate frame relationships, use:
 
     - rosrun tf view_frames
     
-tf viewframes captures the current transform tree in a PDF file called "frames.pdf" in the current working directory.  Under Ubuntu Linux, the resulting file can be viewed using "evince frames.pdf"; of course, any other PDF viewer can be used as well.
+tf viewframes captures the current transform tree in a PDF file called "frames.pdf" in the current working directory.  Under Ubuntu Linux, the resulting file can be viewed using "evince frames.pdf"; of course,
+any other PDF viewer can be used as well.
+
+## Testing using rostest
+
+Level 2 integration testing of ROS nodes uses the Google Test framework combined with the rostest tool to test ROS nodes.  For the purpose of demonstrating these testing capabilities, a ROS testing node called "talker_test" is provided.  "talker_test" tests the setTalkerFrequency service in the talker node.  To invoke the rostest capability at the node level, a test launch script called "talker_test.test" is provided.  To invoke the test at the command line:
+
+    - rostest beginner_tutorials2 talker_test.test
+    
+The output from this command is placed into a specially formatted XML file.  For debugging purposes, the
+output can be sent directly to the terminal using this form of the command:
+
+    - rostest --text beginner_tutorials2 talker_test.test
+    
+The rostest capability is also baked into the package's CMakeLists.txt build configuration file.  To build the test node, invoke the catkin workspace build command with the target "tests":
+
+    - catkin_make tests
+
+To both build and run the tests as part of the catkin build system, use:
+
+    - catkin_make run_tests
     
 ## Use of logging levels
 The following messages may be logged by talker and listener:
@@ -92,7 +112,7 @@ The following messages may be logged by talker and listener:
 - listener: WARN: "Invalid listener logging level " << level << " requested; level remains " << listenerLoggingLevel
 - listener: INFO: "Listener logging level set to " << listenerLoggingLevel
 - listener: ERROR: "Invalid listener logging level " << listenerLoggingLevel
-- listener: Any level selected: "I heard: " << msg->data.c_str()
+- listener: <selected logging level>: "I heard: " << msg->data.c_str()
 - talker: INFO: "Changing talk frequency to " << req.msgsPerSecond << " messages per second"
 - talker: ERROR: "Invalid talker frequency of " << req.msgsPerSecond << " requested"
 - talker: FATAL: "Talker can't start due to invalid frequency"
